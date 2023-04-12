@@ -49,6 +49,11 @@ INSTALLED_APPS = [
 
     # my_apps
     'account',
+    'product',
+    'rating',
+    'comment',
+
+
 
 
 ]
@@ -167,7 +172,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
 ...
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(minutes=60),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

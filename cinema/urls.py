@@ -20,7 +20,9 @@ from django.urls import path, include, re_path
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from drf_yasg import openapi
+from rest_framework.routers import SimpleRouter
 
+from product.views import ProductViewSet
 # from cinema import settings
 
 schema_view = get_schema_view(
@@ -36,9 +38,14 @@ schema_view = get_schema_view(
    permission_classes=[permissions.AllowAny],
 )
 
+router = SimpleRouter()
+router.register('', ProductViewSet)
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('account.urls')),
+    path('products/', include(router.urls)),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path('^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
