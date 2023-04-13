@@ -7,7 +7,7 @@ User = get_user_model()
 class Rating(models.Model):
     RATING_CHOICES = ((1, 'Too Bad!'), (2, 'Bad!'), (3, 'Normal!'), (4, 'Good!'), (5, 'Excellent!'))
     product = models.ForeignKey(Product, related_name='ratings', on_delete=models.CASCADE)
-    owner= models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 

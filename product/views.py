@@ -4,6 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, response
 from rest_framework.decorators import action
 
+from comment.serializers import CommentSerializer
 from rating.serializers import RatingSerializer
 from .models import Product
 from .import serializers
@@ -54,6 +55,27 @@ class ProductViewSet(ModelViewSet):
             rating = product.ratings.get(owner=user)
             rating.delete()
             return response.Response('Successfully deleted!', status=204)
-
+    #
+    # @action(['GET', 'POST', 'DELETE'], detail=True)
+    # def comments(self, request, pk):
+    #     product = self.get_object()
+    #     user = request.user
+    #
+    #     if request.method == 'GET':
+    #         comment = product.comments.all()
+    #         serializer = RatingSerializer(instance=comment, many=True).data
+    #         return response.Response(serializer, status=200)
+    #
+    #     elif request.method == 'POST':
+    #         data = request.data
+    #         serializer = CommentSerializer(data=data)
+    #         serializer.is_valid(raise_exception=True)
+    #         serializer.save(owner=user, product=product)
+    #         return response.Response(serializer.data, status=201)
+    #
+    #     else:
+    #         comment = product.comments.get(owner=user)
+    #         comment.delete()
+    #         return response.Response('Successfully deleted!', status=204)
 
 

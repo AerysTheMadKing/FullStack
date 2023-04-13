@@ -6,17 +6,27 @@ from .models import Product
 
 class ProductListSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['rating'] = instance.ratings.aggregate(Avg('rating'))
+        repr['comments count'] = instance.comments.count()
+        repr['comments'] = CommentSerializer(instance=instance.comments.all(), many=True).data
+        rating = repr['rating']
+        rating['rating__count'] = instance.ratings.count()
+        return repr
 
     class Meta:
         model = Product
         fields = '__all__'
 
-    def to_representation(self, instance):
-        repr = super().to_representation(instance)
-        repr['rating'] = instance.ratings.aggregate(Avg('rating'))
-        rating = repr['rating']
-        rating['rating__count'] = instance.ratings.count()
-        return repr
+
+
+    # def to_representation(self, instance):
+    #     repr = super().to_representation(instance)
+    #     repr['comments count'] = instance.comments.count()
+    #     repr['comments'] = CommentSerializer(instance=instance.comments.all(), many=True).data
+    #
+    #     return repr
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
@@ -29,7 +39,8 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['rating'] = instance.ratings.aggregate(Avg('rating'))
+        repr['comments count'] = instance.comments.count()
+        repr['comments'] = CommentSerializer(instance=instance.comments.all(), many=True).data
         rating = repr['rating']
         rating['rating__count'] = instance.ratings.count()
         return repr
-
