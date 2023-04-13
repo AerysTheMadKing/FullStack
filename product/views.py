@@ -1,8 +1,10 @@
 from django.shortcuts import render
-
+from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, response
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
 
 from comment.serializers import CommentSerializer
 from rating.serializers import RatingSerializer
@@ -11,8 +13,18 @@ from .import serializers
 from .permissions import IsAuthor
 
 
+class StandartResultPagination(PageNumberPagination):
+    page_size = 2
+    page_query_param = 'page'
+    max_page_size = 1000
+
+
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
+    pagination_class = StandartResultPagination
+    filter_backends = (SearchFilter, DjangoFilterBackend)
+    search_fields = ('title',)
+    filterset_fields = ('category',)
 
     def perform_create(self, serializer):
             serializer.save(owner=self.request.user)
@@ -55,27 +67,3 @@ class ProductViewSet(ModelViewSet):
             rating = product.ratings.get(owner=user)
             rating.delete()
             return response.Response('Successfully deleted!', status=204)
-    #
-    # @action(['GET', 'POST', 'DELETE'], detail=True)
-    # def comments(self, request, pk):
-    #     product = self.get_object()
-    #     user = request.user
-    #
-    #     if request.method == 'GET':
-    #         comment = product.comments.all()
-    #         serializer = RatingSerializer(instance=comment, many=True).data
-    #         return response.Response(serializer, status=200)
-    #
-    #     elif request.method == 'POST':
-    #         data = request.data
-    #         serializer = CommentSerializer(data=data)
-    #         serializer.is_valid(raise_exception=True)
-    #         serializer.save(owner=user, product=product)
-    #         return response.Response(serializer.data, status=201)
-    #
-    #     else:
-    #         comment = product.comments.get(owner=user)
-    #         comment.delete()
-    #         return response.Response('Successfully deleted!', status=204)
-
-

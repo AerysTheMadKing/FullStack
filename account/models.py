@@ -43,6 +43,7 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     avatar = models.ImageField(upload_to='avatars/', blank=True, default='avatars/default_avatar.jpg')
+    forgot_password_reset = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(_("active"), default=True,
                                                 help_text=_(
             "Designates whether this user should be treated as active. "

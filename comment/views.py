@@ -19,9 +19,4 @@ class CommentCreateView(generics.CreateAPIView):
 class CommentDetailView(generics.DestroyAPIView):
     queryset = Comments.objects.all()
     serializer_class = serializers.CommentSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    #
-    def get_permissions(self):
-        if self.request.method == 'DELETE':
-            return IsAuthorOrAdmin,
-        return permissions.AllowAny(),
+    permission_classes = IsAuthorOrAdmin,

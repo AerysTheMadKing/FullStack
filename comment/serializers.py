@@ -12,12 +12,3 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class UserCommentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Comments
-#         fields = ('id', 'body', 'film', 'created_at')
-#
-#     def to_representation(self, instance):
-#         repr = super().to_representation(instance)
-#         repr['film_title'] = instance.film.title
-#         return repr

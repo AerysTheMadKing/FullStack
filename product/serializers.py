@@ -2,6 +2,7 @@ from django.db.models import Avg
 from rest_framework import serializers
 
 from comment.serializers import CommentSerializer
+from like.serializers import LikeSerializer
 from .models import Product
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -13,6 +14,8 @@ class ProductListSerializer(serializers.ModelSerializer):
         repr['comments'] = CommentSerializer(instance=instance.comments.all(), many=True).data
         rating = repr['rating']
         rating['rating__count'] = instance.ratings.count()
+        repr['likes_count'] = instance.likes.count()
+        repr['liked_users'] = LikeSerializer(instance=instance.likes.all(), many=True).data
         return repr
 
     class Meta:
@@ -20,13 +23,6 @@ class ProductListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-    # def to_representation(self, instance):
-    #     repr = super().to_representation(instance)
-    #     repr['comments count'] = instance.comments.count()
-    #     repr['comments'] = CommentSerializer(instance=instance.comments.all(), many=True).data
-    #
-    #     return repr
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
@@ -43,4 +39,6 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         repr['comments'] = CommentSerializer(instance=instance.comments.all(), many=True).data
         rating = repr['rating']
         rating['rating__count'] = instance.ratings.count()
+        repr['likes_count'] = instance.likes.count()
+        repr['liked_users'] = LikeSerializer(instance=instance.likes.all(), many=True).data
         return repr

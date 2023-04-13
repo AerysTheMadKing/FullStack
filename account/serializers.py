@@ -60,3 +60,40 @@ class ActivationSerializer(serializers.Serializer):
             self.fail('bad_code')
 
 
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    forgot_password_reset = serializers.CharField(required=True, max_length=255)
+    password = serializers.CharField(required=True, max_length=30, min_length=8, write_only=True)
+    password_confirm = serializers.CharField(required=True, max_length=30, min_length=8, write_only=True)
+    default_error_messages = {
+        'bad_code': _('Code is expired or invalid!')
+    }
+
+
+
+    def validate(self, attrs):
+        self.forgot_password_reset = attrs['forgot_password_reset']
+        password_confirm = attrs.pop('password_confirm')
+        password = attrs['password']
+
+        if password_confirm != password:
+            raise serializers.ValidationError(
+                'Passwords didn\'t match!'
+            )
+        if password == User.password:
+            raise serializers.ValidationError(
+                'Password field must contain alpha and numeric'
+            )
+        user = User.objects.get(forgot_password_reset=attrs['forgot_password_reset'])
+        user.set_password(password)
+        user.save()
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            user = User.objects.get(forgot_password_reset=self.forgot_password_reset)
+            user.forgot_password_reset = ''
+            user.save()
+        except User.DoesNotExist:
+            self.fail('bad_password')
+
