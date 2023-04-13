@@ -14,9 +14,9 @@ from .permissions import IsAuthor
 
 
 class StandartResultPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 10
     page_query_param = 'page'
-    max_page_size = 1000
+    max_page_size = 100
 
 
 class ProductViewSet(ModelViewSet):
