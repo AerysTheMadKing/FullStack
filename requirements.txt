@@ -11,4 +11,4 @@ python-decouple
 PyJWT
 redis
 celery
-
+django-cors-headers
