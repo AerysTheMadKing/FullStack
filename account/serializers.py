@@ -36,29 +36,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-class ActivationSerializer(serializers.Serializer):
-    code = serializers.CharField(required=True, max_length=255)
-
-    default_error_messages = {
-        'bad_code': _('Link is expired or invalid!')
-    }
-
-
-    def validate(self, attrs):
-        self.code = attrs['code']
-        return attrs
-
-    def save(self, **kwargs):
-        try:
-            user = User.objects.get(activation_code=self.code)
-            user.is_active = True
-            user.activation_code = ''
-            user.save()
-
-        except User.DoesNotExist:
-
-            self.fail('bad_code')
-
 
 
 class ForgotPasswordSerializer(serializers.Serializer):

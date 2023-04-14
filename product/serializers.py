@@ -7,6 +7,10 @@ from .models import Product
 
 class ProductListSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
+
+    @staticmethod
+    def is_favorite(product, user):
+        return user.favorites.filter(product=product).exists()
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['rating'] = instance.ratings.aggregate(Avg('rating'))
@@ -16,6 +20,9 @@ class ProductListSerializer(serializers.ModelSerializer):
         rating['rating__count'] = instance.ratings.count()
         repr['likes_count'] = instance.likes.count()
         repr['liked_users'] = LikeSerializer(instance=instance.likes.all(), many=True).data
+        user = self.context['request'].user
+        if user.is_authenticated:
+            repr['is_favorite'] = self.is_favorite(instance, user)
         return repr
 
     class Meta:
@@ -32,6 +39,10 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
+    @staticmethod
+    def is_favorite(product, user):
+        return user.favorites.filter(product=product).exists()
+
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['rating'] = instance.ratings.aggregate(Avg('rating'))
@@ -41,4 +52,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         rating['rating__count'] = instance.ratings.count()
         repr['likes_count'] = instance.likes.count()
         repr['liked_users'] = LikeSerializer(instance=instance.likes.all(), many=True).data
+        user = self.context['request'].user
+        if user.is_authenticated:
+            repr['is_favorite'] = self.is_favorite(instance, user)
         return repr
