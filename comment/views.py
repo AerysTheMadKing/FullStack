@@ -1,0 +1,22 @@
+from django.shortcuts import render
+
+from product.permissions import IsAuthorOrAdmin
+from . models import Comments
+from rest_framework import generics, permissions
+from . import serializers
+# Create your views here.
+
+
+class CommentCreateView(generics.CreateAPIView):
+    queryset = Comments.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class CommentDetailView(generics.DestroyAPIView):
+    queryset = Comments.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = IsAuthorOrAdmin,
