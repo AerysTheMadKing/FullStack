@@ -52,8 +52,7 @@ class ProductViewSet(ModelViewSet):
 
         elif request.method == 'POST':
             if product.ratings.filter(owner=user).exists():
-                return response.Response('You already rated this product', status=400)
-
+                return response.Response('You have already rated this post', status=400)
             data = request.data
             serializer = RatingSerializer(data=data)
             serializer.is_valid(raise_exception=True)
@@ -62,7 +61,7 @@ class ProductViewSet(ModelViewSet):
 
         else:
             if not product.ratings.filter(owner=user).exists():
-                return response.Response('You did\'t rated this product', status=400)
+                return response.Response('You did\'t rated this post', status=400)
 
             rating = product.ratings.get(owner=user)
             rating.delete()
