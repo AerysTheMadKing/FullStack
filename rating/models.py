@@ -4,6 +4,7 @@ from product.models import Product
 
 User = get_user_model()
 
+
 class Rating(models.Model):
     RATING_CHOICES = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
     product = models.ForeignKey(Product, related_name='ratings', on_delete=models.CASCADE)
@@ -14,7 +15,5 @@ class Rating(models.Model):
     def __str__(self):
         return f'{self.owner} -> {self.product} -> {self.rating}'
 
-
     class Meta:
         unique_together = ('owner', 'product')
-

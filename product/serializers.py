@@ -34,6 +34,10 @@ class ProductListSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
     owner = serializers.ReadOnlyField(source='owner.id')
+    rating = serializers.IntegerField(read_only=True)
+    comments = CommentSerializer(read_only=True, many=True)
+    liked_users = LikeSerializer(many=True, read_only=True)
+    comments_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Product

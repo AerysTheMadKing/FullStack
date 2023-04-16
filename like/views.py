@@ -11,13 +11,14 @@ class LikeAPIView(generics.CreateAPIView):
     serializer_class = LikeSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(owner=request.user)
-
-        return Response(serializer.data)
-
+    # def post(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #
+    #     return Response(serializer.data, status=201)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 class LikeDeleteView(generics.DestroyAPIView):
     queryset = Like.objects.all()

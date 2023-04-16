@@ -1,3 +1,4 @@
+from django.db.models import Avg, Count
 from django.shortcuts import render
 from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet
@@ -28,6 +29,13 @@ class ProductViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
             serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        return self.queryset.annotate(
+            rating=Avg("ratings__rating"),
+            comment_count=Count("comments__id"),
+        ).prefetch_related("owner", "comments")
+
 
     def get_serializer_class(self):
         if self.action == 'list':

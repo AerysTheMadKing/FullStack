@@ -46,7 +46,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('account.urls')),
     path('products/', include(router.urls)),
-    path('products/<int:pk>/', include('comment.urls')),
+    path('', include('comment.urls')),
     path('likes/', include('like.urls')),
     path('favorite/', include('favorite.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
