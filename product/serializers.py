@@ -38,6 +38,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     liked_users = LikeSerializer(many=True, read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    # year = serializers.
 
     class Meta:
         model = Product
@@ -60,3 +61,5 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         if user.is_authenticated:
             repr['is_favorite'] = self.is_favorite(instance, user)
         return repr
+
+

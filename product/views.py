@@ -10,7 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from comment.serializers import CommentSerializer
 from rating.serializers import RatingSerializer
 from .models import Product
-from .import serializers
+from . import serializers
 from .permissions import IsAuthor
 
 
@@ -28,14 +28,13 @@ class ProductViewSet(ModelViewSet):
     filterset_fields = ('category',)
 
     def perform_create(self, serializer):
-            serializer.save(owner=self.request.user)
+        serializer.save(owner=self.request.user)
 
     def get_queryset(self):
         return self.queryset.annotate(
             rating=Avg("ratings__rating"),
             comment_count=Count("comments__id"),
         ).prefetch_related("owner", "comments")
-
 
     def get_serializer_class(self):
         if self.action == 'list':
