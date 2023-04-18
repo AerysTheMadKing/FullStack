@@ -20,3 +20,4 @@ class FavoriteSerializer(serializers.ModelSerializer):
             favorite.delete()
             raise serializers.ValidationError('Deleted from favorites!')
         return attrs
+

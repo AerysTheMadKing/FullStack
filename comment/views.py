@@ -1,17 +1,20 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 
-from product.permissions import IsAuthorOrAdmin
+from product.permissions import IsAuthorOrAdmin, IsAuthor
 from . models import Comments
 from rest_framework import generics, permissions, status
 from . import serializers
 # Create your views here.
 
 
-class CommentCreateView(generics.CreateAPIView):
+class CommentCreateView(generics.ListCreateAPIView):
     queryset = Comments.objects.all()
     serializer_class = serializers.CommentSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsAuthor)
+    def get_queryset(self):
+        my_favorites = Comments.objects.filter(owner=self.request.user)
+        return my_favorites
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
