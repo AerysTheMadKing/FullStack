@@ -1,8 +1,12 @@
 from rest_framework import serializers
+
+from product.models import Product
+from rating.models import Rating
 from .models import Like
 
 
 class LikeSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='user.id')
     owner_username = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
@@ -16,3 +20,11 @@ class LikeSerializer(serializers.ModelSerializer):
         if user.likes.filter(product=product).exists():
             raise serializers.ValidationError('You already liked this post!')
         return attrs
+
+class RecommendationSerializer(serializers.ModelSerializer):
+   rating = serializers.ReadOnlyField()
+
+   class Meta:
+       model = Rating
+       fields = ('rating',)
+

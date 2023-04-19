@@ -8,8 +8,5 @@ class Like(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likes')
     created_date = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f'{self.owner} -> {self.product}'
-
     class Meta:
         unique_together = ('owner', 'product')
