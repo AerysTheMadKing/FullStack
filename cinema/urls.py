@@ -17,45 +17,44 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path
+from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-from drf_yasg import openapi
 from rest_framework.routers import SimpleRouter
 
-from product.views import ProductViewSet
+from apps.product.views import ProductViewSet
+
 # from cinema import settings
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Blog API test",
-      default_version='v1',
-      description="test api for blog api py.26",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@snippets.local"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
+    openapi.Info(
+        title="Blog API test",
+        default_version='v1',
+        description="test api for blog api py.26",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@snippets.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
 )
 
 router = SimpleRouter()
 router.register('', ProductViewSet)
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('account.urls')),
-    path('products/', include(router.urls)),
-    path('', include('comment.urls')),
-    path('likes/', include('like.urls')),
-    path('favorite/', include('favorite.urls')),
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path('^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+                  path('admin/', admin.site.urls),
 
+                  path('accounts/', include('apps.account.urls')),
+                  path('products/', include(router.urls)),
+                  path('', include('apps.comment.urls')),
+                  path('likes/', include('apps.like.urls')),
+                  path('favorite/', include('apps.favorite.urls')),
+                  path('rating/', include('apps.rating.urls')),
+                  path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0),
+                       name='schema-json'),
+                  path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+                  path('^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
